@@ -1,0 +1,3 @@
+api_host = "https://your-instance-here"
+access_token = "your-access-token-here"
+filter_account = "@account-to-ignore"

@@ -1,0 +1,11 @@
+[package]
+name = "local"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1.29.1", features = ["full"] }
+megalodon = "0.8.9"
+env_logger = "0.9.3"
+toml = "0.7.6"
+serde = "1.0.180"
