@@ -40,7 +40,7 @@ async fn async_main() {
             return;
         }
     };
-    // проверка юзеров и начало основного цикла
+    // проверка юзера и начало основного цикла
     match verify_credentials(&config.api_host, &config.access_token).await {
         Ok(_account) => {
             let client = generator(SNS::Mastodon, config.api_host.clone(), Some(config.access_token), None);
@@ -77,7 +77,7 @@ async fn async_main() {
 }
 
 
-// проверяем данные пользователя
+// верификация аккаунта
 async fn verify_credentials(
     url: &str,
     access_token: &str,
