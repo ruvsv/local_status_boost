@@ -20,6 +20,7 @@ async fn main() {
     let ctrl_c = ctrl_c();
 
     tokio::select! {
+        // запуск основного кода
         _ = async_main() => {},
         _ = ctrl_c => {
             println!("Received Ctrl+C. Shutting down.");
@@ -39,16 +40,19 @@ async fn async_main() {
             return;
         }
     };
-
+    // проверка юзеров и начало основного цикла
     match verify_credentials(&config.api_host, &config.access_token).await {
         Ok(_account) => {
-            let client = generator(megalodon::SNS::Mastodon, config.api_host.clone(), Some(config.access_token), None);
+            let client = generator(SNS::Mastodon, config.api_host.clone(), Some(config.access_token), None);
             loop {
+                // получаем и обрабатываем статусы
                 match get_local_status(&client).await {
                     Ok(mut statuses) => {
-                        statuses.reverse(); // Reverse the order of statuses
+                        statuses.reverse(); // Reverse the order of statuses(!)
+                        //извлекаем id
                         for status in statuses.iter().filter(|s| s.account.username != config.filter_account) {
                             println!("Received message: {}", status.id);
+                            // бустим статус
                             match boost_status(&client, &status.id).await {
                                 Ok(res) => {
                                     println!("Boosted: {}", res.id);
@@ -63,7 +67,7 @@ async fn async_main() {
                         println!("Error getting local status: {}", err);
                     }
                 }
-                sleep(Duration::from_secs(30)).await;
+                sleep(Duration::from_secs(30)).await; // Задержка цикла
             }
         }
         Err(e) => {
@@ -73,6 +77,7 @@ async fn async_main() {
 }
 
 
+// проверяем данные пользователя
 async fn verify_credentials(
     url: &str,
     access_token: &str,
@@ -82,6 +87,7 @@ async fn verify_credentials(
     Ok(res.json())
 }
 
+// получаем статус
 async fn get_local_status(
     client: &Box<dyn megalodon::Megalodon + Send + Sync>,
 ) -> Result<Vec<entities::Status>, error::Error> {
@@ -89,9 +95,10 @@ async fn get_local_status(
     Ok(res.json())
 }
 
+// функция для буста статуса
 async fn boost_status(
     client: &Box<dyn megalodon::Megalodon + Send + Sync>,
-    id: &str,
+    id: &str, //передаем id записи
 ) -> Result<entities::Status, error::Error> {
     let res = client.reblog_status(id.to_string()).await.map_err(|e| error::Error::from(e))?;
     Ok(res.json())

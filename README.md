@@ -45,4 +45,20 @@ filter_account = "@account-to-ignore"
 
 ### Завершение работы
 
-Чтобы прервать программу, просто нажмите `Ctrl+C`.# local_status_boost
+Чтобы прервать программу, просто нажмите `Ctrl+C`.
+
+### Версия с докер
+
+Перемещаем Dockerfile на уровень выше.
+
+Собираем:
+
+```
+docker build -t local_boost .
+```
+
+Запускаем:
+
+```
+docker run -it local_boost
+```
