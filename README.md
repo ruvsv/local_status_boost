@@ -38,7 +38,7 @@ filter_account = "@account-to-ignore"
 Просто запустите скомпилированную программу:
 
 ```
-./target/release/local-status-boost
+./target/release/local
 ```
 
 Программа будет автоматически репостить все посты в локальной ленте, за исключением постов от аккаунта, указанного в `filter_account`.
